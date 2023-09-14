@@ -22,18 +22,38 @@ code {
   background-color: #4aca08;
 }
 
+.text-green {
+  color: #4aca08;
+}
+
 .text-red {
   color: #d90101;
+}
+
+.bg-red {
+  background-color: #d90101;
 }
 
 .text-orange {
   color: #fe7f00;
 }
 
+.bg-orange {
+  background-color: #fe7f00;
+}
+
 .text-yellow {
   color: #fffb02;
 }
 
+.bg-yellow {
+  background-color: #fffb02;
+}
+
 .text-semi-white {
   color: #ffffff;
+}
+
+.w-30 {
+  width: 30%;
 }
