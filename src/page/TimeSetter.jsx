@@ -2,7 +2,13 @@ import React from 'react';
 
 function TimeSetter() {
     return (
-        <div></div>
+        <div className={"col-12 col-md-10"}>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     );
 }
 

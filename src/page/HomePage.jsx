@@ -1,11 +1,20 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import ProgressBar from "../component/ProgressBar";
 import ControlBar from "../component/ControlBar";
+import {useNavigate} from "react-router-dom";
+import {TIME_COUNTER_PAGE} from "../constant/page";
 
 function HomePage() {
+
+    const navigate = useNavigate();
+
+    const handleClickStartCountingTime = useCallback(() => {
+        navigate(TIME_COUNTER_PAGE);
+    }, []);
+
     return (
         <div className={"col-12 col-md-10"}>
-            <div className={"m-3 d-flex justify-content-center align-items-center fw-bold bg-grey-btn text-semi-white"}
+            <div className={"m-3 d-flex justify-content-center align-items-center fw-bold bg-grey-btn text-white"}
                  style={{height: "30vh", fontSize: "10rem"}}
             >
                 <span className={"me-2"}>05</span>:<span className={"ms-2"}>00</span>
@@ -22,7 +31,10 @@ function HomePage() {
                 </div>
             </div>
             <ProgressBar />
-            <ControlBar />
+            <ControlBar
+                onClickStartCountingTime={handleClickStartCountingTime}
+                availableToSetting={true}
+            />
         </div>
     );
 }
