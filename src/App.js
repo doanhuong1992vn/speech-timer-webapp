@@ -15,22 +15,25 @@ import ScheduleTimeSetter from "./page/ScheduleTimeSetter";
 import WarningTimeSetter from "./page/WarningTimeSetter";
 import UrgentTimeSetter from "./page/UrgentTimeSetter";
 import DangerTimeSetter from "./page/DangerTimeSetter";
+import {TimerContextProvider} from "./component/TimerContext";
 
 
 function App() {
   return (
       <BrowserRouter>
-          <div className="container d-flex align-items-center min-vh-100 justify-content-center">
-              <Routes>
-                  <Route path={HOME_PAGE} element={<HomePage />} />
-                  <Route path={OPTION_SETTING_PAGE} element={<OptionSetting />}/>
-                  <Route path={TIME_COUNTER_PAGE} element={<TimeCounter />}/>
-                  <Route path={SCHEDULE_TIME_SETTER_PAGE} element={<ScheduleTimeSetter />}/>
-                  <Route path={WARNING_TIME_SETTER_PAGE} element={<WarningTimeSetter />}/>
-                  <Route path={URGENT_TIME_SETTER_PAGE} element={<UrgentTimeSetter />}/>
-                  <Route path={DANGER_TIME_SETTER_PAGE} element={<DangerTimeSetter />}/>
-              </Routes>
-          </div>
+          <TimerContextProvider>
+              <div className="container d-flex align-items-center min-vh-100 justify-content-center">
+                  <Routes>
+                      <Route path={HOME_PAGE} element={<HomePage/>}/>
+                      <Route path={OPTION_SETTING_PAGE} element={<OptionSetting/>}/>
+                      <Route path={TIME_COUNTER_PAGE} element={<TimeCounter/>}/>
+                      <Route path={SCHEDULE_TIME_SETTER_PAGE} element={<ScheduleTimeSetter/>}/>
+                      <Route path={WARNING_TIME_SETTER_PAGE} element={<WarningTimeSetter/>}/>
+                      <Route path={URGENT_TIME_SETTER_PAGE} element={<UrgentTimeSetter/>}/>
+                      <Route path={DANGER_TIME_SETTER_PAGE} element={<DangerTimeSetter/>}/>
+                  </Routes>
+              </div>
+          </TimerContextProvider>
       </BrowserRouter>
   );
 }

@@ -15,7 +15,6 @@ function ControlBar({onClickStartCountingTime, availableToSetting}) {
         }
     }
 
-
     const handleClickStartCountingTime = () => {
         onClickStartCountingTime();
     }
@@ -31,13 +30,24 @@ function ControlBar({onClickStartCountingTime, availableToSetting}) {
                     color={availableToSetting ? "white" : "grey"}
                     size={50}
                     onClick={handleClickSettingOption}
+                    className={`${availableToSetting && 'cursor-pointer'}`}
                 />
             </div>
             <div>
-                <BsFillPlayFill color={"white"} size={50} onClick={handleClickStartCountingTime}/>
+                <BsFillPlayFill
+                    color={"white"}
+                    size={50}
+                    onClick={handleClickStartCountingTime}
+                    className={"cursor-pointer"}
+                />
             </div>
             <div>
-                <MdReplay color={"white"} size={50} onClick={handleClickBackToHomePage}/>
+                <MdReplay
+                    color={"white"}
+                    size={50}
+                    className={"cursor-pointer"}
+                    onClick={handleClickBackToHomePage}
+                />
             </div>
         </div>
     );

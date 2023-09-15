@@ -15,13 +15,13 @@ function OptionSetting() {
         <div className={"col-12 col-md-10 text-white fw-bold"}>
             <div className={"d-flex justify-content-between align-items-center p-2 border-bottom rounded"}>
                 <span className={"h2"}>options</span>
-                <AiFillCloseCircle size={50} onClick={handleClickClose}/>
+                <AiFillCloseCircle className={"cursor-pointer"} size={50} onClick={handleClickClose}/>
             </div>
             <div className={"h4 d-flex justify-content-center"}>
                 <table className={"col-10 col-md-6 mt-3 mb-3"}>
                     <tr>
                         <td className={"p-2"}>sound</td>
-                        <td className={"p-2"}>disabled</td>
+                        <td className={"p-2 cursor-pointer"}>disabled</td>
                     </tr>
                     <tr>
                         <td className={"p-2 "}>
@@ -47,11 +47,11 @@ function OptionSetting() {
                     </tr>
                     <tr>
                         <td className={"p-2"}>count mode</td>
-                        <td className={"p-2"}><BsTriangleFill color="#4aca08" size={20} className={"ms-2"}/></td>
+                        <td className={"p-2 cursor-pointer"}><BsTriangleFill color="#4aca08" size={25} className={"ms-2"}/></td>
                     </tr>
                     <tr>
                         <td className={"p-2"}>time format</td>
-                        <td className={"p-2"}><span>default</span></td>
+                        <td className={"p-2 cursor-pointer"}><span>default</span></td>
                     </tr>
                 </table>
             </div>

@@ -15,7 +15,7 @@ function Header({content}) {
     return (
         <div className={"d-flex justify-content-between align-items-center p-2"}>
             <span className={"h2"}>{content}</span>
-            <AiFillCloseCircle size={50} onClick={handleClickClose}/>
+            <AiFillCloseCircle className={"cursor-pointer"} size={50} onClick={handleClickClose}/>
         </div>
     );
 }
