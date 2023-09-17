@@ -2,28 +2,33 @@ import React, {useContext} from 'react';
 import TimeSetter from "../component/TimeSetter";
 import Header from "../component/Header";
 import TimerContext from "../component/TimerContext";
-import {createTime} from "../utils/timeService";
+import {createTime, getSeconds} from "../utils/timeService";
 import {ZERO} from "../constant/number";
 
 function ScheduleTimeSetter() {
 
-    const {scheduleTime, setScheduleTime} = useContext(TimerContext);
+    const {scheduleTime, setScheduleTime, setTotalSeconds} = useContext(TimerContext);
 
     const handleClickIncreaseTime = (type, time) => {
         const _scheduleTime = {...scheduleTime};
         _scheduleTime[type] = time;
-        setScheduleTime(_scheduleTime);
+        setTime(_scheduleTime);
     }
 
     const handleClickDecreaseTime = (type, time) => {
         const _scheduleTime = {...scheduleTime};
         _scheduleTime[type] = time;
-        setScheduleTime(_scheduleTime);
+        setTime(_scheduleTime);
     }
 
     const handleClickResetTime = () => {
         const _scheduleTime = createTime(ZERO, ZERO, ZERO);
-        setScheduleTime(_scheduleTime);
+        setTime(_scheduleTime);
+    }
+
+    const setTime = (scheduleTime) => {
+        setScheduleTime(scheduleTime);
+        setTotalSeconds(getSeconds(scheduleTime));
     }
 
     return (

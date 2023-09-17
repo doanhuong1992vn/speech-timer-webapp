@@ -1,16 +1,18 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {AiTwotoneSetting} from "react-icons/ai";
 import {BsFillPlayFill} from "react-icons/bs";
 import {MdReplay} from "react-icons/md";
 import {useNavigate} from "react-router-dom";
 import {HOME_PAGE, OPTION_SETTING_PAGE} from "../constant/page";
+import {FaPause} from "react-icons/fa";
+import TimerContext from "./TimerContext";
 
-function ControlBar({onClickStartCountingTime, availableToSetting}) {
+function ControlBar({onClickStartCountingTime, isRunning, onClickPauseCountingTime}) {
 
     const navigate = useNavigate();
 
     const handleClickSettingOption = () => {
-        if (availableToSetting) {
+        if (!isRunning) {
             navigate(OPTION_SETTING_PAGE);
         }
     }
@@ -19,27 +21,40 @@ function ControlBar({onClickStartCountingTime, availableToSetting}) {
         onClickStartCountingTime();
     }
 
+    const handleClickPauseCountingTime = () => {
+        onClickPauseCountingTime();
+    }
+
     const handleClickBackToHomePage = () => {
         navigate(HOME_PAGE);
     }
 
     return (
-        <div  className={"mt-5 d-flex justify-content-evenly"}>
+        <div className={"mt-5 d-flex justify-content-evenly"}>
             <div>
                 <AiTwotoneSetting
-                    color={availableToSetting ? "white" : "grey"}
+                    color={isRunning ? "grey" : "white"}
                     size={50}
                     onClick={handleClickSettingOption}
-                    className={`${availableToSetting && 'cursor-pointer'}`}
+                    className={`${!isRunning && 'cursor-pointer'}`}
                 />
             </div>
             <div>
-                <BsFillPlayFill
-                    color={"white"}
-                    size={50}
-                    onClick={handleClickStartCountingTime}
-                    className={"cursor-pointer"}
-                />
+                {
+                    isRunning
+                        ? <FaPause
+                            color={"white"}
+                            size={50}
+                            className={"cursor-pointer"}
+                            onClick={handleClickPauseCountingTime}
+                        />
+                        : <BsFillPlayFill
+                            color={"white"}
+                            size={50}
+                            onClick={handleClickStartCountingTime}
+                            className={"cursor-pointer"}
+                        />
+                }
             </div>
             <div>
                 <MdReplay
