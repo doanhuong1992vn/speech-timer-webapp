@@ -1,0 +1,148 @@
+body {
+  background-image: linear-gradient(180deg, #393939, #101010);
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+
+.bg-grey-btn {
+  background-image: linear-gradient(180deg, #4C4C4C, #414141);
+  border-radius: 20px;
+}
+
+.text-grey {
+  color:  #4C4C4C;
+}
+
+.bg-red-btn {
+  border-radius: 20px;
+  background-image: linear-gradient(180deg, #730303, #630202);
+}
+
+.bg-green {
+  background-color: #4aca08;
+}
+
+.text-green {
+  color: #4aca08;
+}
+
+.text-red {
+  color: #ac0101;
+}
+
+.bg-red {
+  background-color: #ac0101;
+}
+
+.text-orange {
+  color: #fe7f00;
+}
+
+.bg-orange {
+  background-color: #fe7f00;
+}
+
+.text-yellow {
+  color: #fffb02;
+}
+
+.bg-yellow {
+  background-color: #fffb02;
+}
+
+.text-pink {
+  color: #ca3ae4;
+}
+
+.w-30 {
+  width: 30%;
+}
+
+/*input switch*/
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 67px;
+  height: 38px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(180deg, #4C4C4C, #101010);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 35px;
+  width: 35px;
+  top: -2px;
+  left: -1px;
+  background-image: linear-gradient(180deg, #4C4C4C, #101010);
+  -webkit-transition: .4s;
+  transition: .4s;
+  border: 4px solid #6d6b6b;
+}
+
+input:checked + .slider {
+  border: 4px solid white;
+  background-image: linear-gradient(180deg, white, white);
+}
+
+input:checked + .round {
+  border: 4px solid white;
+}
+
+input:checked + .slider:before {
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+  border: 4px solid #6d6b6b;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.tag-hover-normal:hover {
+  transform: scale(1.05);
+  transition: all ease-in-out 0.3s;
+}
+
+.tag-hover-large:hover {
+  transform: scale(1.2);
+  transition: all ease-in-out 0.3s;
+}
+
