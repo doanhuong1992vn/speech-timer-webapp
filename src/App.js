@@ -5,7 +5,8 @@ import {
     HOME_PAGE,
     OPTION_SETTING_PAGE,
     SCHEDULE_TIME_SETTER_PAGE,
-    TIME_COUNTER_PAGE, URGENT_TIME_SETTER_PAGE,
+    TIME_COUNTER_PAGE,
+    URGENT_TIME_SETTER_PAGE,
     WARNING_TIME_SETTER_PAGE
 } from "./constant/page";
 import HomePage from "./page/HomePage";
@@ -15,7 +16,8 @@ import ScheduleTimeSetter from "./page/ScheduleTimeSetter";
 import WarningTimeSetter from "./page/WarningTimeSetter";
 import UrgentTimeSetter from "./page/UrgentTimeSetter";
 import DangerTimeSetter from "./page/DangerTimeSetter";
-import {TimerContextProvider} from "./component/TimerContext";
+import {TimerContextProvider} from "./component/TimerContextHolder";
+import {useEffect} from "react";
 
 
 function App() {

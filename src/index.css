@@ -13,9 +13,15 @@ code {
     monospace;
 }
 
+
+
 .bg-grey-btn {
   background-image: linear-gradient(180deg, #4C4C4C, #414141);
   border-radius: 20px;
+}
+
+.text-grey {
+  color:  #4C4C4C;
 }
 
 .bg-red-btn {
@@ -53,6 +59,10 @@ code {
 
 .bg-yellow {
   background-color: #fffb02;
+}
+
+.text-pink {
+  color: #ca3ae4;
 }
 
 .w-30 {
@@ -108,7 +118,6 @@ input:checked + .round {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
@@ -126,3 +135,14 @@ input:checked + .slider:before {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.tag-hover-normal:hover {
+  transform: scale(1.05);
+  transition: all ease-in-out 0.3s;
+}
+
+.tag-hover-large:hover {
+  transform: scale(1.2);
+  transition: all ease-in-out 0.3s;
+}
+

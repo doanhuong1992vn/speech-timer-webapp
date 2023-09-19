@@ -1,31 +1,36 @@
-import React, {useContext} from 'react';
+import {useContext} from 'react';
 import {AiTwotoneSetting} from "react-icons/ai";
 import {BsFillPlayFill} from "react-icons/bs";
 import {MdReplay} from "react-icons/md";
 import {useNavigate} from "react-router-dom";
-import {HOME_PAGE, OPTION_SETTING_PAGE} from "../constant/page";
 import {FaPause} from "react-icons/fa";
-import TimerContext from "./TimerContext";
+import {HOME_PAGE, OPTION_SETTING_PAGE} from "../constant/page";
+import TimerContextHolder from "./TimerContextHolder";
 
 function ControlBar({onClickStartCountingTime, isRunning, onClickPauseCountingTime}) {
 
     const navigate = useNavigate();
+    const {getSound} = useContext(TimerContextHolder);
 
     const handleClickSettingOption = () => {
         if (!isRunning) {
+            getSound();
             navigate(OPTION_SETTING_PAGE);
         }
     }
 
     const handleClickStartCountingTime = () => {
+        getSound();
         onClickStartCountingTime();
     }
 
     const handleClickPauseCountingTime = () => {
+        getSound();
         onClickPauseCountingTime();
     }
 
     const handleClickBackToHomePage = () => {
+        getSound();
         navigate(HOME_PAGE);
     }
 
@@ -36,7 +41,7 @@ function ControlBar({onClickStartCountingTime, isRunning, onClickPauseCountingTi
                     color={isRunning ? "grey" : "white"}
                     size={50}
                     onClick={handleClickSettingOption}
-                    className={`${!isRunning && 'cursor-pointer'}`}
+                    className={`${!isRunning && 'cursor-pointer tag-hover-large'}`}
                 />
             </div>
             <div>
@@ -45,14 +50,14 @@ function ControlBar({onClickStartCountingTime, isRunning, onClickPauseCountingTi
                         ? <FaPause
                             color={"white"}
                             size={50}
-                            className={"cursor-pointer"}
+                            className={"cursor-pointer tag-hover-large"}
                             onClick={handleClickPauseCountingTime}
                         />
                         : <BsFillPlayFill
                             color={"white"}
                             size={50}
                             onClick={handleClickStartCountingTime}
-                            className={"cursor-pointer"}
+                            className={"cursor-pointer tag-hover-large"}
                         />
                 }
             </div>
@@ -60,7 +65,7 @@ function ControlBar({onClickStartCountingTime, isRunning, onClickPauseCountingTi
                 <MdReplay
                     color={"white"}
                     size={50}
-                    className={"cursor-pointer"}
+                    className={"cursor-pointer tag-hover-large"}
                     onClick={handleClickBackToHomePage}
                 />
             </div>

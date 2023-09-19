@@ -1,4 +1,12 @@
-import {FIFTY_NINE, ONE, SIXTY, ZERO} from "../constant/number";
+import {
+    HOURS_PER_DAY,
+    ONE_HUNDRED_PERCENT,
+    SECONDS_PER_HOURS,
+    SECONDS_PER_MINUTE,
+    SIXTY,
+    ZERO
+} from "../constant/number";
+import {STR_HOURS} from "../constant/string";
 
 export const formatTime = (time) => {
     return `0${time}`.slice(-2);
@@ -6,78 +14,82 @@ export const formatTime = (time) => {
 
 export const createTime = (hours, minutes, seconds) => ({hours, minutes, seconds});
 
-export const increaseTime = (time, number) => {
+export const increaseTime = (type, time, number) => {
     const result = time + number;
-    return result >= SIXTY ? result - SIXTY : result;
+    if (type === STR_HOURS) {
+        return result >= HOURS_PER_DAY ? result - HOURS_PER_DAY : result;
+    } else {
+        return result >= SIXTY ? result - SIXTY : result;
+    }
 }
 
-export const decreaseTime = (time, number) => {
+export const decreaseTime = (type, time, number) => {
     const result = time - number;
-    return result < ZERO ? result + SIXTY : result;
+    if (type === STR_HOURS) {
+        return result < ZERO ? result + HOURS_PER_DAY : result;
+    } else {
+        return result < ZERO ? result + SIXTY : result;
+    }
 }
 
 export const getSeconds = ({hours, minutes, seconds}) => {
-    return hours * 3600 + minutes * 60 + seconds;
+    return hours * SECONDS_PER_HOURS + minutes * SECONDS_PER_MINUTE + seconds;
 }
 
 export const getTimeData = (totalSeconds) => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
+    const hours = Math.floor(totalSeconds / SECONDS_PER_HOURS);
+    const minutes = Math.floor((totalSeconds % SECONDS_PER_HOURS) / SECONDS_PER_MINUTE);
+    const seconds = totalSeconds % SECONDS_PER_MINUTE;
     return {hours, minutes, seconds};
 }
 
 export const getPercent = (seconds, totalSeconds) => {
-    let percent = seconds / totalSeconds * 100;
-    if (percent > 100) {
-        percent = 0;
-    }
-    return percent;
+    return seconds / totalSeconds * ONE_HUNDRED_PERCENT;
 }
 
 export const getPercentData = (scheduleTime, warningTime, urgentTime, dangerTime) => {
     let percentFreeTime,
-        percentAfterFreeTime = 0,
-        percentWarningTime = 0,
-        percentAfterWarningTime = 0,
-        percentUrgentTime = 0,
-        percentDangerTime = 0;
+        percentAfterFreeTime = ZERO,
+        percentWarningTime = ZERO,
+        percentAfterWarningTime = ZERO,
+        percentUrgentTime = ZERO,
+        percentDangerTime = ZERO;
     const totalSeconds = getSeconds(scheduleTime);
     const secondsOfWarningTime = getSeconds(warningTime);
     const secondsOfUrgentTime = getSeconds(urgentTime);
     const secondsOfDangerTime = getSeconds(dangerTime);
     if (secondsOfWarningTime < totalSeconds) {
         percentAfterFreeTime = getPercent(secondsOfWarningTime, totalSeconds);
-        percentFreeTime = 100 - percentAfterFreeTime;
+        percentFreeTime = ONE_HUNDRED_PERCENT - percentAfterFreeTime;
         if (secondsOfUrgentTime < secondsOfWarningTime) {
             percentAfterWarningTime = getPercent(secondsOfUrgentTime, secondsOfWarningTime);
-            percentWarningTime = (100 - percentAfterWarningTime) * percentAfterFreeTime / 100;
+            percentWarningTime = (ONE_HUNDRED_PERCENT - percentAfterWarningTime) * percentAfterFreeTime / ONE_HUNDRED_PERCENT;
             if (secondsOfDangerTime < secondsOfUrgentTime) {
-                percentDangerTime = (getPercent(secondsOfDangerTime, secondsOfUrgentTime) * percentAfterWarningTime / 100) * percentAfterFreeTime / 100 ;
-                percentUrgentTime = 100 - percentFreeTime - percentWarningTime - percentDangerTime;
+                percentDangerTime = (getPercent(secondsOfDangerTime, secondsOfUrgentTime) * percentAfterWarningTime / ONE_HUNDRED_PERCENT) * percentAfterFreeTime / ONE_HUNDRED_PERCENT ;
+                percentUrgentTime = ONE_HUNDRED_PERCENT - percentFreeTime - percentWarningTime - percentDangerTime;
             } else {
-                percentUrgentTime = 100 - percentFreeTime - percentWarningTime;
+                percentUrgentTime = ONE_HUNDRED_PERCENT - percentFreeTime - percentWarningTime;
             }
         } else if (secondsOfDangerTime < secondsOfWarningTime) {
-            percentDangerTime = getPercent(secondsOfDangerTime, secondsOfWarningTime) * percentAfterFreeTime / 100;
-            percentWarningTime = 100 - percentFreeTime - percentDangerTime;
+            percentDangerTime = getPercent(secondsOfDangerTime, secondsOfWarningTime) * percentAfterFreeTime / ONE_HUNDRED_PERCENT;
+            percentWarningTime = ONE_HUNDRED_PERCENT - percentFreeTime - percentDangerTime;
         } else {
             percentWarningTime = percentAfterFreeTime;
         }
     } else if (secondsOfUrgentTime < totalSeconds) {
         percentAfterFreeTime = getPercent(secondsOfUrgentTime, totalSeconds);
-        percentFreeTime = 100 - percentAfterFreeTime;
+        percentFreeTime = ONE_HUNDRED_PERCENT - percentAfterFreeTime;
         if (secondsOfDangerTime < secondsOfUrgentTime) {
-            percentDangerTime = getPercent(secondsOfDangerTime, secondsOfUrgentTime) * percentAfterFreeTime / 100;
-            percentUrgentTime = 100 - percentFreeTime - percentDangerTime;
+            percentDangerTime = getPercent(secondsOfDangerTime, secondsOfUrgentTime) * percentAfterFreeTime / ONE_HUNDRED_PERCENT;
+            percentUrgentTime = ONE_HUNDRED_PERCENT - percentFreeTime - percentDangerTime;
         } else {
             percentUrgentTime = percentAfterFreeTime;
         }
     } else if (secondsOfDangerTime < totalSeconds) {
         percentDangerTime = getPercent(secondsOfDangerTime, totalSeconds);
-        percentFreeTime = 100 - percentDangerTime;
+        percentFreeTime = ONE_HUNDRED_PERCENT - percentDangerTime;
     } else {
-        percentFreeTime = 100;
+        percentFreeTime = ONE_HUNDRED_PERCENT;
     }
     return {
         freeTime: percentFreeTime,
@@ -86,3 +98,4 @@ export const getPercentData = (scheduleTime, warningTime, urgentTime, dangerTime
         dangerTime: percentDangerTime
     };
 }
+

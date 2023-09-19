@@ -1,74 +1,192 @@
-import {useCallback, useContext, useEffect, useState} from 'react';
+import {useContext, useEffect, useLayoutEffect, useState} from 'react';
+import useSound from 'use-sound';
+import chimesSound from "../asset/sound/chimes.mp3";
 import ProgressBar from "../component/ProgressBar";
 import ControlBar from "../component/ControlBar";
-import {useNavigate} from "react-router-dom";
-import TimerContext from "../component/TimerContext";
-import {formatTime, getTimeData} from "../utils/timeService";
-import {ZERO} from "../constant/number";
+import TimerContextHolder from "../component/TimerContextHolder";
+import {getPercent, getPercentData, getTimeData} from "../utils/timeService";
+import {
+    FIFTEEN_MINUTES,
+    INDEX_OF_DEFAULT, INDEX_OF_DISABLED,
+    INDEX_OF_MINUTES,
+    INDEX_OF_SECONDS,
+    ONE_HUNDRED_PERCENT,
+    ONE_SECOND,
+    SECONDS_PER_MINUTE,
+    ZERO
+} from "../constant/number";
 import {TIME_COUNTER_PAGE} from "../constant/page";
+import Timer from "../component/Timer";
+import {SOUND_MODE, STR_MINUTES, STR_SECONDS, TIME_FORMAT} from "../constant/string";
 
 function TimeCounter() {
 
-    const navigate = useNavigate();
-    const {totalSeconds, setTotalSeconds, setHistoryPage} = useContext(TimerContext);
+    const {
+        totalSeconds,
+        setHistoryPage,
+        soundMode, getSound,
+        showTimeline,
+        showOvertime,
+        countdown,
+        timeFormat,
+        isRunning, setIsRunning,
+        timeRunning, setTimeRunning,
+        scheduleTime, warningTime, urgentTime, dangerTime
+    } = useContext(TimerContextHolder);
+
     const [hours, setHours] = useState(ZERO);
     const [minutes, setMinutes] = useState(ZERO);
     const [seconds, setSeconds] = useState(ZERO);
-    const [timeRunning, setTimeRunning] = useState(ZERO);
+    const [textColor, setTextColor] = useState("text-green");
+    const [soundChimes] = useSound(chimesSound);
+    const percentData = getPercentData(scheduleTime, warningTime, urgentTime, dangerTime);
 
-    const [isRunning, setIsRunning] = useState(true);
 
     useEffect(() => {
         setHistoryPage(TIME_COUNTER_PAGE);
-        const timeData = getTimeData(totalSeconds);
-        setHours(timeData.hours);
-        setMinutes(timeData.minutes);
-        setSeconds(timeData.seconds);
+        changeStyleTextColor(timeRunning);
+        if (countdown && timeRunning <= totalSeconds) {
+            setTimeByCountDownMode(timeRunning);
+        } else {
+            const _timeRunning = timeRunning > totalSeconds ? timeRunning - totalSeconds : timeRunning;
+            setTimeByCountUpMode(_timeRunning);
+        }
+        if (!isRunning) {
+            setTextColor("text-white")
+        }
     }, []);
 
-    useEffect(() => {
+
+    useLayoutEffect(() => {
         let timeCounter;
         if (isRunning) {
             timeCounter = setTimeout(() => {
-                if (seconds === ZERO) {
-                    setSeconds(59);
-                    if (minutes === ZERO) {
-                        setMinutes(59);
-                        setHours(hours => hours - 1);
-                    } else {
-                        setMinutes(minutes => minutes - 1);
-                    }
-                } else {
-                    setSeconds(seconds => seconds - 1);
+                let _timeRunning = timeRunning + ONE_SECOND;
+                setTimeRunning(_timeRunning);
+                changeStyleTextColor(_timeRunning);
+                if (_timeRunning === totalSeconds && soundMode !== SOUND_MODE[INDEX_OF_DISABLED]) {
+                    soundChimes();
                 }
-                setTimeRunning(timeRunning + 1);
+                if (countdown && _timeRunning <= totalSeconds) {
+                    setTimeByCountDownMode(_timeRunning);
+                } else {
+                    _timeRunning = _timeRunning > totalSeconds ? _timeRunning - totalSeconds : _timeRunning;
+                    setTimeByCountUpMode(_timeRunning);
+                }
+                getSound();
             }, 1000);
-            if (hours === ZERO && minutes === ZERO && seconds === ZERO) {
+            if ((timeRunning >= totalSeconds && !showOvertime) || (timeRunning >= totalSeconds + FIFTEEN_MINUTES)) {
                 clearTimeout(timeCounter);
             }
         }
         return () => {
             clearTimeout(timeCounter);
         }
-    }, [hours, minutes, seconds, isRunning]);
+    }, [timeRunning, isRunning]);
 
-    const handleClickResumeCountingTime = useCallback(() => {
+
+    const setTimeByDefaultFormat = (timeData) => {
+        setHours(timeData.hours);
+        setMinutes(timeData.minutes);
+        setSeconds(timeData.seconds);
+    }
+
+
+    const setTimeByCountUpMode = (timeRunning) => {
+        switch (timeFormat) {
+            case TIME_FORMAT[INDEX_OF_MINUTES] :
+                setMinutes(Math.floor(timeRunning / SECONDS_PER_MINUTE));
+                break;
+            case TIME_FORMAT[INDEX_OF_SECONDS] :
+                setSeconds(timeRunning);
+                break;
+            default :
+                const timeData = getTimeData(timeRunning);
+                setTimeByDefaultFormat(timeData);
+        }
+    }
+
+
+    const setTimeByCountDownMode = (timeRunning) => {
+        const timeRemaining = totalSeconds - timeRunning;
+        switch (timeFormat) {
+            case TIME_FORMAT[INDEX_OF_MINUTES] :
+                setMinutes(Math.ceil(timeRemaining / SECONDS_PER_MINUTE));
+                break;
+            case TIME_FORMAT[INDEX_OF_SECONDS] :
+                setSeconds(timeRemaining);
+                break;
+            default :
+                const timeData = getTimeData(timeRemaining);
+                setTimeByDefaultFormat(timeData);
+        }
+    }
+
+    const changeStyleTextColor = (timeRunning) => {
+        const percent = getPercent(timeRunning, totalSeconds);
+        if (percent < percentData.freeTime) {
+            setTextColor("text-green");
+        } else if (percent < percentData.freeTime + percentData.warningTime) {
+            setTextColor("text-yellow");
+        } else if (percent < percentData.freeTime + percentData.warningTime + percentData.urgentTime) {
+            setTextColor("text-orange");
+        } else if (percent < ONE_HUNDRED_PERCENT) {
+            setTextColor("text-red");
+        } else if (percent >= ONE_HUNDRED_PERCENT && showOvertime) {
+            setTextColor("text-pink");
+        } else {
+            setTextColor("text-white");
+        }
+    }
+
+
+    const handleClickResumeCountingTime = () => {
+        changeStyleTextColor(timeRunning);
         setIsRunning(true);
-    }, []);
+    };
 
-    const handleClickPauseCountingTime = useCallback(() => {
+
+    const handleClickPauseCountingTime = () => {
+        setTextColor("text-white")
         setIsRunning(false);
-    }, []);
+    };
+
 
     return (
         <div className={"col-12 col-md-10"}>
-            <div className={"m-3 d-flex justify-content-center align-items-center fw-bold text-green"}
-                 style={{height: "30vh", fontSize: "10rem"}}
+            <div className={`m-3 d-flex justify-content-center align-items-center fw-bold ${textColor}`}
+                 style={{fontSize: "10rem"}}
             >
-                <span className={"me-2"}>{formatTime(minutes)}</span>:
-                <span className={"ms-2"}>{formatTime(seconds)}</span>
+                {
+                    timeFormat === TIME_FORMAT[INDEX_OF_DEFAULT] &&
+                    <Timer hours={hours} minutes={minutes} seconds={seconds}/>
+                }
+                {
+                    timeFormat === TIME_FORMAT[INDEX_OF_MINUTES] &&
+                    <div className={"d-flex flex-column"}>
+                        <span className={"d-flex justify-content-center"} style={{marginBottom: "-3rem"}}>
+                            {minutes}
+                        </span>
+                        <span className={"fw-normal text-grey d-flex justify-content-center"} style={{fontSize: "4rem"}}>
+                            {STR_MINUTES}
+                        </span>
+                    </div>
+                }
+                {
+                    timeFormat === TIME_FORMAT[INDEX_OF_SECONDS] &&
+                    <div className={"d-flex flex-column"}>
+                        <span className={"d-flex justify-content-center"} style={{marginBottom: "-3rem"}}>
+                            {seconds}
+                        </span>
+                        <span className={"fw-normal text-grey d-flex justify-content-center"} style={{fontSize: "4rem"}}>
+                            {STR_SECONDS}
+                        </span>
+                    </div>
+                }
             </div>
-            <ProgressBar timeRunning={timeRunning} />
+            <div className={"mt-3"}>
+                {showTimeline && <ProgressBar timeRunning={timeRunning}/>}
+            </div>
             <ControlBar
                 onClickStartCountingTime={handleClickResumeCountingTime}
                 onClickPauseCountingTime={handleClickPauseCountingTime}

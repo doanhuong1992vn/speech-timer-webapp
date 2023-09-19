@@ -1,26 +1,22 @@
-import {useContext, useEffect, useRef, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {BsTriangleFill} from "react-icons/bs";
-import TimerContext from "./TimerContext";
+import TimerContextHolder from "./TimerContextHolder";
 import {getPercent, getPercentData} from "../utils/timeService";
-import {ZERO} from "../constant/number";
-
+import {ONE_HUNDRED_PERCENT, ZERO} from "../constant/number";
 
 
 function ProgressBar({timeRunning}) {
 
-    const {scheduleTime, warningTime, urgentTime, dangerTime, totalSeconds} = useContext(TimerContext);
-    const [percentData, setPercentData] = useState({});
+    const {scheduleTime, warningTime, urgentTime, dangerTime, totalSeconds} = useContext(TimerContextHolder);
+    const percentData = getPercentData(scheduleTime, warningTime, urgentTime, dangerTime);
     const [range, setRange] = useState(ZERO);
 
-    useEffect(() => {
-        const percentData = getPercentData(scheduleTime, warningTime, urgentTime, dangerTime);
-        setPercentData(percentData);
-    }, []);
 
     useEffect(() => {
         if (timeRunning) {
             const distance = document.getElementById("progress-bar").clientWidth;
-            const percent = getPercent(timeRunning, totalSeconds);
+            let percent = getPercent(timeRunning, totalSeconds);
+            percent = percent > 100 ? ONE_HUNDRED_PERCENT : percent;
             const range = distance * percent / 100;
             setRange(range);
         }
@@ -28,7 +24,7 @@ function ProgressBar({timeRunning}) {
 
     return (
         <div className={"position-relative mt-2 ms-3 me-3"}>
-            <div className="progress" style={{height: 30}} id={"progress-bar"}>
+            <div className="progress" style={{height: 30, backgroundColor: "#101010"}} id={"progress-bar"}>
                 <div className="progress-bar bg-green"
                      role="progressbar"
                      style={{width: `${percentData.freeTime}%`}}
@@ -58,7 +54,7 @@ function ProgressBar({timeRunning}) {
                      aria-valuemax="100">
                 </div>
             </div>
-            <div style={{position: "absolute", bottom: -21, left: -10 + range, zIndex: 1}}>
+            <div style={{position: "absolute", bottom: -21, left: -10 + range, zIndex: 1, transition: "all linear 0.3s"}}>
                 <BsTriangleFill color="white" size={20}/>
             </div>
         </div>
